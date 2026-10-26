@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>$FFGG Airdrop</title>
+<meta name="description" content="Claim 200,000 $FFGG.">
+<meta name="theme-color" content="#070906">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070906;--term:#0b0e09;--line:#1d2617;
+  --lime:#8fd14f;--lime-dim:#5f8f33;--lime-faint:#8fd14f22;
+  --text:#c9e8a8;--muted:#62744f;--red:#ff5c4d;--amber:#ffc94d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  height:100dvh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#121a0d 0%,var(--bg) 70%);
+  color:var(--text);font-family:"JetBrains Mono",ui-monospace,monospace;font-size:15px;
+  padding:clamp(10px,3vh,32px) clamp(10px,3vw,32px);
+}
+/* CRT scanlines */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:10;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;box-shadow:inset 0 0 160px rgba(0,0,0,.85)}
+
+.term{width:100%;max-width:900px;height:100%;max-height:760px;display:flex;flex-direction:column;
+  background:var(--term);border:1px solid var(--lime-dim);border-radius:10px;overflow:hidden;
+  box-shadow:0 0 0 1px #000,0 0 60px #8fd14f1f,0 30px 80px #000}
+.bar{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;background:#10150c;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.bar i{width:11px;height:11px;border-radius:2px;background:var(--line)}
+.bar i:first-child{background:var(--lime)}
+.bar .t{flex:1;text-align:center}
+.bar a{color:var(--lime);text-decoration:none}
+
+.screen{flex:1;min-height:0;overflow-y:auto;padding:18px clamp(14px,3vw,26px) 24px;scroll-behavior:smooth;
+  text-shadow:0 0 6px #8fd14f40}
+.screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line)}
+
+.head{display:flex;gap:18px;align-items:center;margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--line)}
+.head img{width:84px;height:84px;image-rendering:pixelated;border:1px solid var(--lime-dim);flex:none;filter:drop-shadow(0 0 10px #8fd14f30)}
+.head .big{font-family:"VT323",monospace;font-size:clamp(46px,8vw,72px);line-height:.8;color:var(--lime)}
+.head .sub{font-size:12px;color:var(--muted);margin-top:8px}
+
+.l{white-space:pre-wrap;word-break:break-word;line-height:1.65;min-height:1.65em}
+.l .p{color:var(--lime)}
+.ok{color:var(--lime)}.err{color:var(--red)}.dim{color:var(--muted)}.warn{color:var(--amber)}
+.hl{background:var(--lime);color:var(--bg);padding:0 4px;text-shadow:none}
+
+.prompt{display:flex;align-items:center;gap:8px;line-height:1.65}
+.prompt .p{color:var(--lime);white-space:nowrap}
+.prompt input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--text);
+  font:inherit;font-size:16px;caret-color:var(--lime);text-shadow:inherit;padding:2px 0}
+.prompt input::placeholder{color:#3c4a30}
+.cursor{display:inline-block;width:.6em;height:1.1em;background:var(--lime);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.cmd{appearance:none;font:inherit;font-size:14px;color:var(--bg);background:var(--lime);border:0;padding:4px 12px;cursor:pointer;
+  text-decoration:none;display:inline-block;margin:4px 8px 4px 0;text-shadow:none;border-radius:2px}
+.cmd:hover{background:#b6ef7c}
+.cmd.ghost{background:transparent;color:var(--lime);box-shadow:inset 0 0 0 1px var(--lime)}
+.cmd.ghost:hover{background:var(--lime-faint)}
+.cmd[disabled]{opacity:.4;pointer-events:none}
+
+.task{margin:6px 0 2px;padding:10px 12px;border-left:2px solid var(--lime-dim);background:#0f140c}
+.task .tt{color:var(--lime);font-weight:700}
+.task .bar2{font-family:"VT323",monospace;font-size:22px;color:var(--lime);letter-spacing:1px}
+
+.permit{margin:12px 0 4px}
+.permit canvas{width:100%;max-width:640px;height:auto;display:block;border:1px solid var(--lime-dim)}
+
+@media (max-width:600px){
+  body{padding:0;font-size:13.5px}
+  .term{max-height:none;border-radius:0;border:0}
+  .head img{width:62px;height:62px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="term">
+  <div class="bar"><i></i><i></i><i></i><span class="t">ffgg@airdrop: ~</span><a id="xlink" target="_blank" rel="noopener"></a></div>
+  <div class="screen" id="screen">
+    <div class="head">
+      <img id="logo" alt="$FFGG">
+      <div><div class="big">$FFGG</div><div class="sub">airdrop terminal v1.0 — 200,000 per wallet</div></div>
+    </div>
+    <div id="out"></div>
+  </div>
+</div>
+
+<script>
+/* ============ SETTINGS ============ */
+const CONFIG = {
+  handle:  "FFggRH0x",
+  tweetId: "",   // post ID for like & comment
+  formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe3nPTAoqD-BYuzJGu6dFc6jNJxDCpZXDqELXVXkEnADA4MCA/formResponse",
+  fields: {x:"entry.1049186356", wallet:"entry.601030845", permit:"entry.1091051622", time:"entry.1870719561"},
+  wait: 3        // seconds per task
+};
+/* ================================== */
+
+const LOGO_SRC="data:image/webp;base64,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";
+if(/[?&]reset\b/.test(location.search)){try{Object.keys(localStorage).filter(k=>k.startsWith("ffgg_")).forEach(k=>localStorage.removeItem(k))}catch(e){}history.replaceState(null,"",location.pathname)}
+const store={get(k){try{return JSON.parse(localStorage.getItem("ffgg_"+k))}catch(e){return null}},set(k,v){try{localStorage.setItem("ffgg_"+k,JSON.stringify(v))}catch(e){}}};
+const H=CONFIG.handle,T=CONFIG.tweetId,P="https://x.com/"+H;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+const LOGO=new Image();LOGO.src=LOGO_SRC;
+document.getElementById("logo").src=LOGO_SRC;
+const xl=document.getElementById("xlink");xl.href=P;xl.textContent="@"+H;
+
+const out=document.getElementById("out"),screen=document.getElementById("screen");
+const down=()=>{screen.scrollTop=screen.scrollHeight};
+
+/* print a line, typed or instant */
+async function line(html,{type=true,speed=14,cls=""}={}){
+  const d=document.createElement("div");d.className="l "+cls;out.appendChild(d);
+  if(!type){d.innerHTML=html;down();return d}
+  // type text nodes char by char, keep markup
+  const tmp=document.createElement("div");tmp.innerHTML=html;
+  async function walk(src,dst){
+    for(const n of [...src.childNodes]){
+      if(n.nodeType===3){const t=document.createTextNode("");dst.appendChild(t);
+        for(const ch of n.textContent){t.textContent+=ch;if(ch!==" ")await sleep(speed);down()}}
+      else{const c=n.cloneNode(false);dst.appendChild(c);await walk(n,c)}
+    }
+  }
+  await walk(tmp,d);return d;
+}
+function block(html){const d=document.createElement("div");d.innerHTML=html;out.appendChild(d);down();return d}
+
+/* prompt that resolves with validated input */
+function ask(label,{placeholder="",validate,paste=false,value=""}){
+  return new Promise(res=>{
+    const wrap=block(`<div class="prompt"><span class="p">${label}</span><input spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="${placeholder}">${paste?'<button class="cmd ghost" type="button">paste</button>':""}</div>`);
+    const inp=wrap.querySelector("input");inp.value=value;
+    setTimeout(()=>inp.focus({preventScroll:true}),50);
+    screen.onclick=e=>{if(!e.target.closest("a,button,input"))inp.focus({preventScroll:true})};
+    if(paste)wrap.querySelector("button").onclick=async()=>{try{inp.value=(await navigator.clipboard.readText()).trim();inp.focus()}catch(e){inp.focus()}};
+    inp.addEventListener("keydown",async e=>{
+      if(e.key!=="Enter")return;
+      const v=inp.value.trim(),err=validate(v);
+      if(err){const d=document.createElement("div");d.className="l";d.innerHTML=`<span class="err">✗ ${esc(err)}</span>`;wrap.before(d);inp.value="";down();return}
+      const p=wrap.querySelector(".prompt");p.innerHTML=`<span class="p">${label}</span><span>${esc(v)}</span>`;
+      screen.onclick=null;res(v);
+    });
+  });
+}
+
+/* ---------- flow ---------- */
+const TASKS=[
+  {name:"follow",   title:"Follow @"+H,              hint:"follow the official account",           url:"https://x.com/intent/follow?screen_name="+H},
+  {name:"like",     title:"Like the post",           hint:"like the airdrop post",                 url:T?"https://x.com/intent/like?tweet_id="+T:P},
+  {name:"comment",  title:"Comment on the post",     hint:"write anything — your words",           url:T?"https://x.com/intent/post?in_reply_to="+T:P},
+  {name:"notify",   title:"Turn on notifications 🔔", hint:"open the profile and tap the bell",     url:P}
+];
+const USER=/^[A-Za-z0-9_]{1,15}$/,ADDR=/^0x[a-fA-F0-9]{40}$/;
+
+function runTask(t,i){
+  return new Promise(res=>{
+    const b=block(`<div class="task"><div class="tt">[${String(i+1).padStart(2,"0")}/${String(TASKS.length).padStart(2,"0")}] ${t.title}</div>
+      <div class="dim">${t.hint}</div>
+      <div class="act"><a class="cmd" href="${t.url}" target="_blank" rel="noopener">run ./${t.name} ↗</a></div></div>`);
+    const a=b.querySelector(".cmd");
+    a.addEventListener("click",()=>{
+      const act=b.querySelector(".act");
+      act.innerHTML=`<span class="bar2"></span> <span class="dim">verifying…</span>`;
+      const bar=act.querySelector(".bar2"),N=20,ms=CONFIG.wait*1000,t0=Date.now();
+      const iv=setInterval(()=>{
+        const f=Math.min(1,(Date.now()-t0)/ms),k=Math.round(f*N);
+        bar.textContent="["+"#".repeat(k)+"-".repeat(N-k)+"] "+Math.round(f*100)+"%";
+        if(f>=1){clearInterval(iv);act.innerHTML=`<span class="ok">✓ ${t.name} complete</span>`;down();res()}
+      },80);
+    },{once:true});
+  });
+}
+
+async function main(){
+  const fast=!!store.get("xu");
+  const o={type:!fast};
+  await line(`<span class="p">$</span> ./claim --token FFGG --amount 200000`,o);
+  await line(`<span class="dim">[boot] loading airdrop protocol… done</span>`,{...o,speed:6});
+  await line(`<span class="dim">[boot] network: robinhood wallet (0x)</span>`,{...o,speed:6});
+  await line(`<span class="dim">[boot] allocation: </span><span class="hl">200,000 $FFGG</span>`,{...o,speed:6});
+  await line("",{type:false});
+
+  /* 1. X username */
+  let xu=store.get("xu");
+  if(!xu){
+    await line(`<span class="warn">?</span> identify yourself. enter your X username.`);
+    xu=(await ask("x_user@ffgg:~$",{placeholder:"@yourname",validate:v=>{v=v.replace(/^@/,"");return USER.test(v)?null:"invalid username (letters, numbers, _ — max 15)"}})).replace(/^@/,"");
+    store.set("xu",xu);
+  }else{
+    await line(`<span class="p">x_user@ffgg:~$</span> ${esc(xu)}`,{type:false});
+  }
+  await line(`<span class="ok">✓ welcome, @${esc(xu)}</span>`,o);
+  await line("",{type:false});
+
+  /* 2. tasks */
+  let step=store.get("step")||0;
+  if(step<TASKS.length)await line(`<span class="warn">?</span> complete ${TASKS.length} tasks to unlock your allocation.`);
+  for(let i=0;i<TASKS.length;i++){
+    if(i<step){await line(`<span class="ok">✓ [${String(i+1).padStart(2,"0")}/${String(TASKS.length).padStart(2,"0")}] ${TASKS[i].title}</span>`,{type:false});continue}
+    await runTask(TASKS[i],i);step=i+1;store.set("step",step);await sleep(250);
+  }
+  await line(`<span class="ok">✓ all tasks complete — allocation unlocked</span>`,o);
+  await line("",{type:false});
+
+  /* 3. wallet */
+  let wa=store.get("wa");
+  if(!store.get("submitted")){
+    await line(`<span class="warn">?</span> enter your Robinhood wallet address (starts with 0x).`);
+    while(true){
+      wa=await ask("wallet@ffgg:~$",{placeholder:"0x…",paste:true,validate:v=>!v.startsWith("0x")?"address must start with 0x":v.length!==42?`address must be 42 characters (got ${v.length})`:!ADDR.test(v)?"invalid characters in address":null});
+      store.set("wa",wa);
+      if(!CONFIG.formUrl){await line(`<span class="err">✗ claim server not connected yet — try again later</span>`,{type:false});continue}
+      await line(`<span class="dim">transmitting claim…</span>`);
+      try{
+        const F=CONFIG.fields,body=new URLSearchParams();body.append(F.x,"@"+xu);body.append(F.wallet,wa);body.append(F.permit,permitId(wa));body.append(F.time,new Date().toLocaleString("tr-TR",{timeZone:"Europe/Istanbul"}));
+        await fetch(CONFIG.formUrl,{method:"POST",mode:"no-cors",body});
+        store.set("submitted",true);store.set("issued",Date.now());break;
+      }catch(e){await line(`<span class="err">✗ network error — press enter to retry</span>`,{type:false})}
+    }
+  }else{
+    await line(`<span class="p">wallet@ffgg:~$</span> ${esc(wa)}`,{type:false});
+  }
+  await line(`<span class="ok">✓ claim registered</span>`,o);
+  await line(`<span class="p">$</span> ./print_permit --holder @${esc(xu)}`,o);
+
+  /* 4. permit */
+  const pb=block(`<div class="permit"><canvas id="cv"></canvas>
+    <div style="margin-top:8px"><button class="cmd" id="dl">download ↓</button><a class="cmd ghost" id="sh" target="_blank" rel="noopener">share on X ↗</a></div></div>`);
+  const cv=pb.querySelector("#cv");
+  await drawPermit(cv,xu,wa);down();
+  if(!LOGO.complete)LOGO.onload=()=>drawPermit(cv,xu,wa);
+  pb.querySelector("#dl").onclick=()=>{const a=document.createElement("a");a.download=`ffgg-permit-${xu}.png`;a.href=cv.toDataURL("image/png");a.click()};
+  const txt=`Just claimed my $FFGG permit 👽\n200,000 $FFGG secured.\n\nPermit ${permitId(wa)} · @${H}`;
+  pb.querySelector("#sh").href="https://x.com/intent/post?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(location.origin+location.pathname);
+  await line(`<span class="dim">keep notifications on for @${H} — distribution will be announced there.</span>`,o);
+  block(`<div class="l"><span class="p">$</span> <span class="cursor"></span></div>`);
+}
+
+/* ---------- permit card ---------- */
+function hash(s){let h=2166136261;for(const ch of s.toLowerCase()){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function permitId(w){const h=hash(w).toString(36).toUpperCase().padStart(7,"0");return "FFGG-"+h.slice(0,3)+"-"+h.slice(3,7)}
+
+async function drawPermit(cv,x,w){
+  try{await Promise.all([document.fonts.load('80px "VT323"'),document.fonts.load('700 24px "JetBrains Mono"'),document.fonts.load('24px "JetBrains Mono"')])}catch(e){}
+  const W=1200,Hh=675;cv.width=W;cv.height=Hh;const g=cv.getContext("2d");g.imageSmoothingEnabled=false;
+  const bg="#0b0e09",lime="#8fd14f",dim="#5f8f33",text="#c9e8a8",muted="#62744f";
+  const VT='"VT323", monospace',MO='"JetBrains Mono", monospace';
+  const id=permitId(w),d=new Date(store.get("issued")||Date.now()),
+        date=[d.getDate(),d.getMonth()+1,d.getFullYear()].map(n=>String(n).padStart(2,"0")).join(".");
+  g.fillStyle=bg;g.fillRect(0,0,W,Hh);
+  // title bar
+  g.fillStyle="#10150c";g.fillRect(0,0,W,58);g.fillStyle="#1d2617";g.fillRect(0,58,W,2);
+  [lime,"#1d2617","#1d2617"].forEach((c,i)=>{g.fillStyle=c;g.fillRect(28+i*24,22,14,14)});
+  g.fillStyle=muted;g.font=`20px ${MO}`;g.textAlign="center";g.fillText(`ffgg@permit: ~/permits/${id}.txt`,W/2,36);g.textAlign="left";
+  // portrait
+  const px=60,py=110,ps=330;
+  g.fillStyle="#000";g.fillRect(px,py,ps,ps);
+  if(LOGO.complete&&LOGO.naturalWidth)g.drawImage(LOGO,px,py,ps,ps);
+  g.strokeStyle=lime;g.lineWidth=3;g.strokeRect(px,py,ps,ps);
+  // corner brackets
+  g.fillStyle=lime;[[px-12,py-12,1,1],[px+ps+12,py-12,-1,1],[px-12,py+ps+12,1,-1],[px+ps+12,py+ps+12,-1,-1]].forEach(([cx,cy,sx,sy])=>{g.fillRect(cx,cy,30*sx,4*sy);g.fillRect(cx,cy,4*sx,30*sy)});
+  g.fillStyle=muted;g.font=`18px ${MO}`;g.fillText("holder_photo: [REDACTED]",px,py+ps+48);
+  g.fillText(`> x.com/${H}`,px,py+ps+80);
+  // right column
+  const L=450;
+  const label=(t,y)=>{g.fillStyle=muted;g.font=`18px ${MO}`;g.fillText(t,L,y)};
+  label("$ whoami",108);
+  g.fillStyle=lime;let fs=92;g.font=`${fs}px ${VT}`;while(g.measureText("@"+x).width>700&&fs>50){fs-=6;g.font=`${fs}px ${VT}`}
+  g.fillText("@"+x,L-2,196);
+  label("$ cat allocation",252);
+  let as=140;const fit=()=>{g.font=`${as}px ${VT}`;const a=g.measureText("200,000").width;g.font=`${Math.round(as*.38)}px ${VT}`;return a+14+g.measureText("$FFGG").width};while(fit()>W-L-50&&as>70)as-=4;
+  g.shadowColor="#8fd14f";g.shadowBlur=24;g.fillStyle=lime;g.font=`${as}px ${VT}`;g.fillText("200,000",L-4,372);g.shadowBlur=0;
+  const aw=g.measureText("200,000").width;g.fillStyle=text;g.font=`${Math.round(as*.38)}px ${VT}`;g.fillText("$FFGG",L+aw+14,372);
+  // details
+  const rows=[["wallet",w.slice(0,8)+"…"+w.slice(-6)],["permit_id",id],["issued",date]];
+  rows.forEach((r,i)=>{const y=432+i*40;g.fillStyle=muted;g.font=`20px ${MO}`;g.fillText(r[0].padEnd(10," "),L,y);
+    g.fillStyle=text;g.font=`700 22px ${MO}`;g.fillText(r[1],L+150,y)});
+  // status block
+  g.fillStyle=lime;g.fillRect(L,560,250,50);g.fillStyle=bg;g.font=`700 24px ${MO}`;g.fillText("STATUS: CLAIMED",L+18,594);
+  g.fillStyle=lime;g.fillRect(L+266,566,16,38);
+  // barcode
+  let h=hash(w+x),cx=930;g.fillStyle=dim;
+  for(let i=0;i<40;i++){h=Math.imul(h^(h>>>13),1103515245)>>>0;const bw=1+(h%3);if(i%2===0)g.fillRect(cx,410,bw*2,110);cx+=bw*2+2}
+  g.fillStyle=muted;g.font=`16px ${MO}`;g.fillText(id,930,545);
+  // frame + scanlines
+  g.strokeStyle=dim;g.lineWidth=4;g.strokeRect(2,2,W-4,Hh-4);
+  g.fillStyle="rgba(0,0,0,.18)";for(let y=60;y<Hh;y+=4)g.fillRect(0,y,W,1.5);
+}
+
+main();
+</script>
+</body>
+</html>
