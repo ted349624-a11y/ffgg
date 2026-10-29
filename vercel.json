@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/claim", "destination": "/claim/index.html" }
+  ]
+}
