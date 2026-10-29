@@ -351,13 +351,9 @@ function render(){
   else{
     const x=store.get("xu")||"anon";
     say(`You're on the list, <em>@${esc(x)}</em>. Don't lose your pass.`);
-    act.innerHTML=`<div class="cardwrap"><canvas id="cv" aria-label="Your $FFGG whitelist pass"></canvas></div>
-      <div class="btns"><button class="btn" id="dl" type="button">DOWNLOAD ↓</button><a class="btn ghost" id="sh" target="_blank" rel="noopener">SHARE ON X ↗</a></div>`;
+    act.innerHTML=`<div class="cardwrap"><canvas id="cv" aria-label="Your $FFGG whitelist pass"></canvas></div>`;
     const cv=$("cv"),wa=store.get("wa")||"0x";
     drawPass(cv,x,wa);
-    $("dl").onclick=()=>{const a=document.createElement("a");a.download=`ffgg-whitelist-${x}.png`;a.href=cv.toDataURL("image/png");a.click()};
-    const txt=`I'm on the $FFGG whitelist ✦ Hoshi wrote my name in the book.\n\nPass ${passId(wa)} · @${H}`;
-    $("sh").href="https://x.com/intent/post?text="+encodeURIComponent(txt)+"&url="+encodeURIComponent(location.origin+location.pathname);
   }
 }
 function bindEnter(inp,fn){inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();fn()}})}
