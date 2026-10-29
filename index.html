@@ -73,6 +73,9 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 .cmd.ghost{background:transparent;color:var(--ink)}
 .cmd.ghost:hover{background:var(--ink);color:var(--sheet)}
 .cmd[disabled]{opacity:.4;pointer-events:none}
+.prompt .cmd{margin:0;flex:none;white-space:nowrap}
+.prompt .enter{animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{0%,80%,100%{transform:none}88%{transform:translateX(3px)}94%{transform:translateX(-1px)}}
 
 /* screentone task panel */
 .task{margin:8px 0 2px;padding:10px 12px;border:2px solid var(--ink);
@@ -88,6 +91,10 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
   body::before{display:none}
   .term{max-height:none;border:0;box-shadow:none}
   .head img{width:66px;height:66px}
+  .prompt{flex-wrap:wrap;row-gap:6px}
+  .prompt input{flex-basis:100%;order:1}
+  .prompt .cmd{order:2;padding:7px 14px}
+  .prompt .enter{margin-left:auto}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -150,18 +157,19 @@ function block(html){const d=document.createElement("div");d.innerHTML=html;out.
 /* prompt that resolves with validated input */
 function ask(label,{placeholder="",validate,paste=false,value=""}){
   return new Promise(res=>{
-    const wrap=block(`<div class="prompt"><span class="p">${label}</span><input spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="${placeholder}">${paste?'<button class="cmd ghost" type="button">paste</button>':""}</div>`);
+    const wrap=block(`<div class="prompt"><span class="p">${label}</span><input spellcheck="false" autocomplete="off" autocapitalize="off" enterkeyhint="go" placeholder="${placeholder}">${paste?'<button class="cmd ghost paste" type="button">paste</button>':""}<button class="cmd enter" type="button" aria-label="Enter">enter ↵</button></div>`);
     const inp=wrap.querySelector("input");inp.value=value;
     setTimeout(()=>inp.focus({preventScroll:true}),50);
     screen.onclick=e=>{if(!e.target.closest("a,button,input"))inp.focus({preventScroll:true})};
-    if(paste)wrap.querySelector("button").onclick=async()=>{try{inp.value=(await navigator.clipboard.readText()).trim();inp.focus()}catch(e){inp.focus()}};
-    inp.addEventListener("keydown",async e=>{
-      if(e.key!=="Enter")return;
+    if(paste)wrap.querySelector(".paste").onclick=async()=>{try{inp.value=(await navigator.clipboard.readText()).trim();inp.focus()}catch(e){inp.focus()}};
+    const submit=()=>{
       const v=inp.value.trim(),err=validate(v);
       if(err){const d=document.createElement("div");d.className="l";d.innerHTML=`<span class="err">✗ ${esc(err)}</span>`;wrap.before(d);inp.value="";down();return}
       const p=wrap.querySelector(".prompt");p.innerHTML=`<span class="p">${label}</span><span>${esc(v)}</span>`;
       screen.onclick=null;res(v);
-    });
+    };
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();submit()}});
+    wrap.querySelector(".enter").onclick=submit;
   });
 }
 
