@@ -8,8 +8,11 @@
 import { verifyMessage, getAddress } from "ethers";
 import { VOTE as BASE, voteMessage, phaseAt } from "../lib/vote-shared.js";
 
-const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
-const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "";
+// Upstash env names depend on the prefix chosen when connecting (KV_, STORAGE_, …) — accept any.
+const envEnd = (suffix, skip) => process.env["KV" + suffix] || process.env["UPSTASH_REDIS" + suffix] ||
+  Object.entries(process.env).find(([k, v]) => k.endsWith(suffix) && !(skip && k.includes(skip)) && v)?.[1] || "";
+const KV_URL = envEnd("_REST_API_URL") || process.env.UPSTASH_REDIS_REST_URL || "";
+const KV_TOKEN = envEnd("_REST_API_TOKEN", "READ_ONLY") || process.env.UPSTASH_REDIS_REST_TOKEN || "";
 const ADMIN_KEY = process.env.ADMIN_KEY || "";
 
 function config() {
