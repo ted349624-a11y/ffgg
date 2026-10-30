@@ -6,7 +6,7 @@
 //   GET  /api/vote?key=ADMIN_KEY&export=csv   voter list for the airdrop
 // Storage: Upstash Redis (Vercel Marketplace) via its REST API.
 import { verifyMessage, getAddress } from "ethers";
-import { VOTE as BASE, voteMessage, phaseAt } from "../lib/vote-shared.js";
+import { VOTE as BASE, voteMessage, phaseAt, passReady } from "../lib/vote-shared.js";
 
 // Upstash env names depend on the prefix chosen when connecting (KV_, STORAGE_, …) — accept any.
 const envEnd = (suffix, skip) => process.env["KV" + suffix] || process.env["UPSTASH_REDIS" + suffix] ||
@@ -32,6 +32,7 @@ const hashToObj = r => { if (!r) return {}; if (!Array.isArray(r)) return r; con
 
 const pad = v => BigInt(v).toString(16).padStart(64, "0");
 async function passBalance(cfg, wallet) {
+  if (!passReady(cfg)) return 0n;            // pass not live yet: everyone is a reader
   const n = cfg.nft, data = n.standard === "erc1155"
     ? "0x00fdd58e" + pad(wallet) + pad(n.tokenId || 0)     // balanceOf(address,uint256)
     : "0x70a08231" + pad(wallet);                          // balanceOf(address)
@@ -50,7 +51,7 @@ async function passBalance(cfg, wallet) {
 
 function publicRound(cfg, phase) {
   return {
-    phase, round: cfg.round, readerThreshold: cfg.readerThreshold, chain: cfg.nft.chain, contract: cfg.nft.contract,
+    phase, round: cfg.round, readerThreshold: cfg.readerThreshold, chain: cfg.nft.chain, contract: cfg.nft.contract, passLive: passReady(cfg),
     options: cfg.options.map(({ key, title, teaser, img, pos, sfx }) => ({ key, title, teaser, img, pos, sfx }))
   };
 }
@@ -91,7 +92,8 @@ export default async function handler(req, res) {
         let wallet; try { wallet = getAddress(String(q.wallet)); } catch { return res.status(400).json({ error: "Invalid wallet address." }); }
         const bal = await passBalance(cfg, wallet);
         out.me = { wallet, role: bal > 0n ? "member" : "reader", weight: bal > 0n ? Number(bal) : 1,
-          hasVoted: storage ? !!(await kv("HEXISTS", `votes:${cfg.round.id}`, wallet.toLowerCase())) : false };
+          hasVoted: false };
+        if (storage) out.me.hasVoted = !!(await kv("HEXISTS", `votes:${cfg.round.id}:${out.me.role}`, wallet.toLowerCase()));
       }
       return res.status(200).json(out);
     }
@@ -114,8 +116,9 @@ export default async function handler(req, res) {
     const bal = await passBalance(cfg, wallet);
     const role = bal > 0n ? "member" : "reader", weight = role === "member" ? Number(bal) : 1, id = cfg.round.id;
     const rec = JSON.stringify({ c: choice, r: role, w: weight, t: new Date().toISOString() });
-    const fresh = await kv("HSETNX", `votes:${id}`, wallet.toLowerCase(), rec);
-    if (!+fresh) return res.status(409).json({ error: "This wallet has already voted in this round." });
+    // one vote per wallet per role: a reader who later holds a pass can still cast a member vote
+    const fresh = await kv("HSETNX", `votes:${id}:${role}`, wallet.toLowerCase(), rec);
+    if (!+fresh) return res.status(409).json({ error: `This wallet has already voted as a ${role} in this round.` });
     await kv("HINCRBY", `tally:${id}:${role}`, choice, weight);
     await kv("HINCRBY", `count:${id}`, role, 1);
     if (role === "member") await kv("HINCRBY", `count:${id}`, "memberWeight", weight);
@@ -126,9 +129,10 @@ export default async function handler(req, res) {
 }
 
 async function csv(res, cfg, r) {
-  const all = hashToObj(await kv("HGETALL", `votes:${cfg.round.id}`));
   const rows = [["wallet", "role", "choice", "weight", "backed_winner", "airdrop_eligible", "voted_at"]];
-  for (const [w, v] of Object.entries(all)) {
+  const all = [];
+  for (const role of ["member", "reader"]) for (const e of Object.entries(hashToObj(await kv("HGETALL", `votes:${cfg.round.id}:${role}`)))) all.push(e);
+  for (const [w, v] of all) {
     const x = JSON.parse(v), backed = !!r.winner && x.c === r.winner;
     rows.push([w, x.r, x.c, x.w, backed, backed && r.unlocked, x.t]);
   }

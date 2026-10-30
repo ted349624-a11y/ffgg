@@ -193,7 +193,7 @@ const store = { get(k) { try { return localStorage.getItem("ffgg_vote_" + k) } c
 function drawOptions() {
   const opts = (S && S.options) || VOTE.options, res = S && S.results, closed = S && S.phase === "closed";
   const maxM = res ? Math.max(1, ...Object.values(res.members)) : 1, maxR = res ? Math.max(1, ...Object.values(res.readers)) : 1;
-  const mine = store.get(roundId() + "_" + (account || "").toLowerCase());
+  const mine = store.get(roundId() + "_" + (me ? me.role : "") + "_" + (account || "").toLowerCase());
   $("opts").classList.toggle("res", !!(closed && res));
   $("opts").innerHTML = opts.map(o => {
     const sel = (pick === o.key && !closed) || (closed && mine === o.key && !res?.winner), win = closed && res && res.winner === o.key;
@@ -261,12 +261,15 @@ function msg(t, err) { $("msg").innerHTML = t || ""; $("msg").classList.toggle("
 function btn(text, enabled, icon = "", cls = "") { const b = $("btn"); b.disabled = !enabled; b.className = "btn " + cls; $("btnT").textContent = text; $("btnI").innerHTML = icon; }
 function drawAction() {
   if (busy) return;
-  const ph = S.phase, mine = account && store.get(roundId() + "_" + account.toLowerCase());
+  const ph = S.phase, mine = account && me && store.get(roundId() + "_" + me.role + "_" + account.toLowerCase());
   // who
-  if (!account) $("who").innerHTML = ph === "preview" ? "Voting opens after the Member Pass mint. Read the options and pick your side." : "Connect your wallet. We check for a Member Pass automatically.";
+  if (!account) $("who").innerHTML = ph === "preview" ? "Voting opens after the Member Pass mint. Read the options and pick your side."
+    : S.passLive === false ? "Reader voting is open. Member Pass votes unlock as soon as the pass is live." : "Connect your wallet. We check for a Member Pass automatically.";
   else if (me) $("who").innerHTML = me.role === "member"
     ? `<span class="tag m">MEMBER</span>${short(account)} holds <b>${me.weight} Member Pass${me.weight > 1 ? "es" : ""}</b>. Your vote counts ×${me.weight}.`
-    : `<span class="tag">READER</span>${short(account)} has no Member Pass, so you vote as a <b>reader</b> (1 point).`;
+    : S.passLive === false
+      ? `<span class="tag">READER</span>${short(account)} votes as a <b>reader</b> (1 point). Member Pass votes unlock when the pass is live.`
+      : `<span class="tag">READER</span>${short(account)} has no Member Pass, so you vote as a <b>reader</b> (1 point).`;
   // fine print
   $("fine").innerHTML = "Signing is free. No gas, no transaction. One vote per wallet per round." +
     (S.contract ? `<br>Member Pass: ${short(S.contract)}${S.chain ? " on " + S.chain : ""}` : "") +
@@ -277,6 +280,7 @@ function drawAction() {
   if (ph === "closed") return btn(S.results && S.results.winner ? `CHAPTER ${S.round.chapter}: ${(S.options.find(o => o.key === S.results.winner) || {}).title || ""}`.toUpperCase() : "VOTE CLOSED", false, "", "ok");
   if (!account) return btn(ph === "soon" ? "CONNECT WALLET (VOTING OPENS SOON)" : "CONNECT WALLET", true, "→");
   if (me && me.hasVoted) { $("actH").textContent = "VOTE SEALED"; return btn(mine ? `YOU VOTED ${mine} ✓` : "YOU HAVE VOTED ✓", false, "", "ok"); }
+  $("actH").textContent = "CAST YOUR VOTE";
   if (ph === "soon") return btn("VOTING NOT OPEN YET", false);
   if (!S.storage) return btn("VOTING NOT CONNECTED YET", false);
   if (!pick) return btn("PICK AN OPTION ABOVE", false, "↑");
@@ -301,7 +305,7 @@ async function vote() {
   try {
     const r = await fetch("/api/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ wallet: account, choice: pick, issued, signature }) });
     const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
-    store.set(roundId() + "_" + account.toLowerCase(), pick);
+    store.set(roundId() + "_" + j.role + "_" + account.toLowerCase(), pick);
     busy = false; msg(j.role === "member" ? `Sealed. Your ${j.weight} pass vote${j.weight > 1 ? "s" : ""} for ${pick} will be revealed when the vote closes.` : `Sealed. Your reader point for ${pick} is in.`);
     await load();
   } catch (e) { busy = false; msg(e.message, true); drawOptions(); drawAction(); }
