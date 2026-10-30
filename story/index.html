@@ -20,6 +20,7 @@ body{background:var(--paper);color:var(--ink);font-family:"Shantell Sans","Comic
   display:flex;justify-content:center;padding:clamp(10px,2vh,22px) clamp(10px,2vw,22px);height:100dvh;user-select:none;-webkit-user-select:none}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.45;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+button{color:var(--ink);-webkit-appearance:none;appearance:none}
 .dg{font-family:"Dela Gothic One","Arial Black",sans-serif;font-weight:400}
 .mono{font-family:"JetBrains Mono",monospace}
 
@@ -201,7 +202,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 (() => {
 "use strict";
 const HANDLE = "FFggRH0x";
-const IMG = { face: ["img/face.webp", "56% 40%"], stand: ["img/stand.webp", "50% 16%"], point: ["img/point.webp", "50% 30%"], smile: ["img/smile.webp", "50% 12%"] };
+const IMG = { face: ["/story/img/face.webp", "56% 40%"], stand: ["/story/img/stand.webp", "50% 16%"], point: ["/story/img/point.webp", "50% 30%"], smile: ["/story/img/smile.webp", "50% 12%"] };
 
 /* ============ SCRIPT ============
    Each step: art (image key or null), bg ("city" | "erase" | null), sfx, narr (caption on the panel),
