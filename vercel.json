@@ -11,6 +11,10 @@
     {
       "source": "/vote",
       "destination": "/vote/index.html"
+    },
+    {
+      "source": "/airdrop",
+      "destination": "/airdrop/index.html"
     }
   ]
 }

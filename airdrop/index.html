@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FFGG · Airdrop</title>
+<meta name="description" content="Whitelist: 200,000 $FFGG. Member Pass: 1,000,000 $FFGG per pass. Check your allocation.">
+<meta name="theme-color" content="#f1efe8">
+<meta property="og:title" content="FFGG Member Pass Airdrop">
+<meta property="og:description" content="1,000,000 $FFGG per Member Pass.">
+<meta property="og:image" content="/airdrop/pass.webp">
+<link rel="icon" type="image/png" sizes="48x48" href="/ffgg-48.png">
+<link rel="shortcut icon" href="/ffgg.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/ffgg-apple-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shantell+Sans:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f1efe8;--white:#fffdf8;--ink:#111;--muted:#6f6a60;--red:#d0202e;--tone:rgba(17,17,17,.18)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--paper);color:var(--ink);font-family:"Shantell Sans","Comic Sans MS",sans-serif;min-height:100dvh}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.45;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+button,input{font:inherit;color:var(--ink);-webkit-appearance:none;appearance:none}
+.dg{font-family:"Dela Gothic One","Arial Black",sans-serif;font-weight:400}
+.mono{font-family:"JetBrains Mono",monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,30px) clamp(14px,3vw,30px) 60px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:clamp(15px,1.7vw,19px);letter-spacing:.03em}
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.1em;border:2.5px solid var(--ink);background:var(--white);padding:6px 10px;box-shadow:3px 3px 0 var(--ink)}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--red)}
+
+.hero{margin-top:clamp(20px,4vh,40px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(18px,4vw,48px);align-items:center}
+.k{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.16em;color:var(--muted)}
+h1{font-size:clamp(40px,6.2vw,82px);line-height:.9;margin-top:12px;letter-spacing:-.01em}
+h1 span{color:var(--red)}
+.lead{font-weight:700;font-size:clamp(16px,1.5vw,19px);line-height:1.5;color:#3c3a35;margin-top:16px;max-width:32em}
+.rates{margin-top:22px;display:flex;flex-wrap:wrap;gap:14px 18px}
+.rate{display:inline-flex;align-items:stretch;border:4px solid var(--ink);background:var(--white);box-shadow:6px 6px 0 var(--ink)}
+.rate div{padding:12px 16px;display:flex;flex-direction:column;justify-content:center}
+.rate div+div{border-left:4px solid var(--ink);background:var(--ink);color:var(--white)}
+.rate b{font-family:"Dela Gothic One",sans-serif;font-weight:400;font-size:clamp(22px,2.6vw,32px);line-height:1}
+.rate span{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;margin-top:6px;opacity:.75}
+
+.card{position:relative;justify-self:center;width:min(100%,460px);aspect-ratio:1}
+.card .fx{position:absolute;inset:-12%;opacity:.35;background:repeating-conic-gradient(from 0deg at 50% 50%,var(--ink) 0deg .45deg,transparent .45deg 3.4deg);
+  -webkit-mask:radial-gradient(circle at 50% 50%,transparent 0 46%,#000 72%);mask:radial-gradient(circle at 50% 50%,transparent 0 46%,#000 72%)}
+.card img{position:relative;width:100%;height:100%;filter:drop-shadow(0 24px 30px rgba(0,0,0,.18));animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) rotate(-.6deg)}}
+.card .sfx{position:absolute;right:-6px;top:-10px;writing-mode:vertical-rl;font-size:clamp(40px,5vw,64px);line-height:1;-webkit-text-stroke:9px var(--paper);paint-order:stroke fill}
+
+.lower{margin-top:clamp(28px,5vh,52px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(16px,3vw,32px);align-items:start}
+.panel{background:var(--white);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:clamp(16px,2.6vw,28px)}
+.panel h2{font-size:clamp(22px,2.4vw,30px);line-height:1}
+
+.alloc{margin-top:16px;border:4px solid var(--ink);background-color:var(--white);background-image:radial-gradient(var(--tone) 1.1px,transparent 1.45px);background-size:8px 8px;padding:18px 20px}
+.alloc .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--muted)}
+.alloc .line{display:flex;justify-content:space-between;gap:12px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;padding:8px 0;border-bottom:2px dashed #cfcabe}
+.alloc .line i{font-style:normal;color:var(--muted)}
+.alloc .line b{font-family:"Dela Gothic One",sans-serif;font-weight:400;font-size:17px}
+.alloc .tot{margin-top:12px}
+.alloc .amt{font-family:"Dela Gothic One",sans-serif;font-size:clamp(40px,5.4vw,68px);line-height:1;margin-top:10px;letter-spacing:-.01em;word-break:break-word}
+.alloc .amt small{display:block;font-size:.36em;margin-top:6px}
+.alloc .calc{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;margin-top:10px}
+.alloc.zero .amt{color:#a9a59b}
+.who{margin-top:14px;font-weight:800;font-size:16.5px;line-height:1.45;min-height:1.45em}
+.who .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.1em;padding:3px 8px;margin-right:6px;vertical-align:2px;border:2px solid var(--ink)}
+.who .tag.m{background:var(--red);color:#fff;border-color:var(--red)}
+.btn{margin-top:14px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;font-family:"Dela Gothic One",sans-serif;font-size:clamp(17px,1.7vw,20px);
+  color:var(--white);background:var(--ink);border:4px solid var(--ink);padding:16px 18px;box-shadow:6px 6px 0 rgba(17,17,17,.3);transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translate(3px,3px);box-shadow:3px 3px 0 rgba(17,17,17,.3)}
+.btn.claim{background:var(--red)}
+.btn:disabled{cursor:default;transform:none}
+.btn.claim:disabled{background:#a19e96}
+.soon{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.12em;background:var(--white);color:var(--ink);padding:4px 8px}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.6;min-height:1.6em;color:var(--muted)}
+.msg.err{color:var(--red)}
+.check{margin-top:18px;border-top:2.5px dashed #cfcabe;padding-top:14px}
+.check label{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.check .f{display:flex;gap:8px;margin-top:8px}
+.check input{flex:1;min-width:0;width:0;border:3px solid var(--ink);background:var(--white);padding:10px 12px;font-family:"JetBrains Mono",monospace;font-size:14px;outline:none}
+.check input:focus{box-shadow:0 0 0 3px var(--red)}
+.check button{border:3px solid var(--ink);background:var(--ink);color:var(--white);font-family:"Dela Gothic One",sans-serif;font-size:15px;padding:0 14px;cursor:pointer}
+.fine{margin-top:14px;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.7;color:var(--muted)}
+.fine button{background:none;border:0;text-decoration:underline;cursor:pointer;color:var(--muted);font-size:12px;font-family:inherit}
+
+.rules ol{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.rules li{display:flex;gap:14px;align-items:flex-start;font-weight:700;font-size:15.5px;line-height:1.45;color:#2a2925}
+.rules li i{flex:none;width:34px;height:34px;display:grid;place-items:center;font-style:normal;font-family:"Dela Gothic One",sans-serif;background:var(--ink);color:var(--white);font-size:16px}
+.rules li:nth-child(1) i,.rules li:nth-child(2) i{background:var(--red)}
+.rules em{font-style:normal;background:var(--ink);color:var(--white);padding:0 .2em}
+.table{margin-top:16px;border:3px solid var(--ink)}
+.table div{display:flex;justify-content:space-between;padding:8px 12px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13.5px}
+.table div+div{border-top:2px solid var(--ink)}
+.table div:nth-child(odd){background:#f6f3eb}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .card{width:min(80vw,360px);order:-1;margin-bottom:28px}
+  .card .fx{inset:-8%}
+  .lower{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand dg">FFGG · AIRDROP</div>
+    <div class="pill"><i></i><span>CLAIM COMING SOON</span></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="k">$FFGG AIRDROP</div>
+      <h1 class="dg">CHECK YOUR <span>$FFGG AIRDROP.</span></h1>
+      <p class="lead">Every whitelisted wallet gets 200,000 $FFGG. Member Pass holders get 1,000,000 $FFGG more for every pass they hold.</p>
+      <div class="rates"><div class="rate"><div><b>WHITELIST</b><span>EVERY WALLET</span></div><div><b>200,000</b><span>$FFGG</span></div></div><div class="rate"><div><b>1 PASS</b><span>MEMBER PASS</span></div><div><b>1,000,000</b><span>$FFGG</span></div></div></div>
+    </div>
+    <div class="card"><div class="fx"></div><img src="/airdrop/pass.webp" alt="FFGG First Edition Member Pass"><div class="sfx dg">キラッ</div></div>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <h2 class="dg">YOUR ALLOCATION</h2>
+      <div class="who" id="who">Connect your wallet to see your whitelist and Member Pass allocation.</div>
+      <div class="alloc zero" id="alloc">
+        <div class="line"><span>WHITELIST</span><b id="wl">–</b></div>
+        <div class="line"><span>MEMBER PASS <i id="passes">–</i></span><b id="mp">–</b></div>
+        <div class="row tot"><span>TOTAL</span></div>
+        <div class="amt" id="amt">0<small>$FFGG</small></div>
+        <div class="calc" id="calc">Whitelist 200,000 + 1,000,000 per pass</div>
+      </div>
+      <button class="btn" id="connect"><span id="connectT">CONNECT WALLET</span><span id="connectI">→</span></button>
+      <button class="btn claim" id="claim" disabled><span>CLAIM $FFGG</span><span class="soon">COMING SOON</span></button>
+      <div class="msg" id="msg"></div>
+      <div class="check">
+        <label for="addr">OR CHECK ANY WALLET</label>
+        <div class="f"><input id="addr" placeholder="0x…" spellcheck="false" autocapitalize="off" autocomplete="off" enterkeyhint="go"><button id="go">CHECK</button></div>
+      </div>
+      <div class="fine" id="fine">Member Pass on Robinhood Chain · <span id="ca"></span></div>
+    </div>
+
+    <div class="panel rules">
+      <h2 class="dg">HOW IT WORKS</h2>
+      <ol>
+        <li><i>1</i><span><b>Whitelist: 200,000 <em>$FFGG</em></b> for every connected wallet.</span></li>
+        <li><i>2</i><span><b>Member Pass: 1,000,000 <em>$FFGG</em> per pass</b>, added on top. Your wallet is checked on chain, nothing to sign.</span></li>
+        <li><i>3</i><span><b>Claim opens soon.</b> The date is announced on @FFggRH0x. Keep your passes in the same wallet.</span></li>
+      </ol>
+      <div class="table">
+        <div><span>WHITELIST ONLY</span><span>200,000 $FFGG</span></div>
+        <div><span>WL + 1 PASS</span><span>1,200,000 $FFGG</span></div>
+        <div><span>WL + 2 PASSES</span><span>2,200,000 $FFGG</span></div>
+        <div><span>WL + 5 PASSES</span><span>5,200,000 $FFGG</span></div>
+        <div><span>WL + 10 PASSES</span><span>10,200,000 $FFGG</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+import { VOTE } from "/lib/vote-shared.js";
+const PER_PASS = 1000000, WL = 200000;
+const $ = id => document.getElementById(id);
+const eth = window.ethereum;
+const short = a => a.slice(0, 6) + "…" + a.slice(-4);
+const fmt = n => n.toLocaleString("en-US");
+let account = null, busy = false;
+
+$("ca").innerHTML = `<a href="https://robinhoodchain.blockscout.com/token/${VOTE.nft.contract}" target="_blank" rel="noopener" style="color:inherit">${short(VOTE.nft.contract)} ↗</a>`;
+
+function msg(t, err) { $("msg").textContent = t || ""; $("msg").classList.toggle("err", !!err); }
+function show(wallet, passes, mine) {
+  const mp = passes * PER_PASS, total = WL + mp;
+  $("wl").textContent = fmt(WL); $("passes").textContent = `× ${passes}`; $("mp").textContent = fmt(mp);
+  $("amt").innerHTML = fmt(total) + "<small>$FFGG</small>";
+  $("calc").textContent = passes ? `200,000 + ${passes} × 1,000,000 = ${fmt(total)} $FFGG` : "Whitelist allocation. Add a Member Pass for +1,000,000 each.";
+  $("alloc").classList.remove("zero");
+  $("who").innerHTML = passes
+    ? `<span class="tag m">WL + MEMBER</span>${short(wallet)} is whitelisted and holds <b>${passes} Member Pass${passes > 1 ? "es" : ""}</b>.`
+    : `<span class="tag m">WL</span>${short(wallet)} is whitelisted.`;
+  if (mine) $("fine").innerHTML = `Member Pass on Robinhood Chain · ${$("ca").outerHTML}<br>Connected ${short(wallet)} · <button id="disc">disconnect</button>`;
+  const d = $("disc"); if (d) d.onclick = () => { account = null; reset(); };
+}
+function reset() {
+  $("wl").textContent = "–"; $("passes").textContent = "–"; $("mp").textContent = "–"; $("amt").innerHTML = "0<small>$FFGG</small>";
+  $("calc").textContent = "Whitelist 200,000 + 1,000,000 per pass"; $("alloc").classList.add("zero");
+  $("who").textContent = "Connect your wallet to see your whitelist and Member Pass allocation.";
+  $("fine").innerHTML = `Member Pass on Robinhood Chain · ${$("ca").outerHTML}`;
+  $("connect").style.display = ""; msg("");
+}
+async function lookup(wallet, mine) {
+  if (busy) return; busy = true; msg("Checking Member Pass balance…");
+  try {
+    const r = await fetch("/api/vote?wallet=" + encodeURIComponent(wallet), { cache: "no-store" });
+    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+    const passes = j.me && j.me.role === "member" ? j.me.weight : 0;
+    show(j.me ? j.me.wallet : wallet, passes, mine); msg("");
+    if (mine) $("connect").style.display = "none";
+  } catch (e) { msg("Could not check this wallet: " + e.message, true); }
+  busy = false;
+}
+$("connect").onclick = async () => {
+  if (!eth) { msg("No wallet found. Open this page in your wallet app's browser, or paste your address below.", true); return; }
+  try { const a = await eth.request({ method: "eth_requestAccounts" }); account = a[0]; if (account) lookup(account, true); }
+  catch (e) { msg(e.code === 4001 ? "Connection cancelled." : "Could not connect: " + (e.message || e), true); }
+};
+const check = () => { const v = $("addr").value.trim(); if (!/^0x[a-fA-F0-9]{40}$/.test(v)) { msg("Enter a valid 0x wallet address.", true); return; } lookup(v, false); };
+$("go").onclick = check; $("addr").addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+if (eth && eth.on) eth.on("accountsChanged", a => { account = a[0] || null; account ? lookup(account, true) : reset(); });
+if (eth) eth.request({ method: "eth_accounts" }).then(a => { if (a && a[0]) { account = a[0]; lookup(account, true); } }).catch(() => {});
+</script>
+</body>
+</html>
