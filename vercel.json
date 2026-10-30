@@ -16,5 +16,12 @@
       "source": "/airdrop",
       "destination": "/airdrop/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/story",
+      "permanent": false
+    }
   ]
 }
