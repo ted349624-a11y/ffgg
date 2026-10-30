@@ -7,6 +7,10 @@
     {
       "source": "/story",
       "destination": "/story/index.html"
+    },
+    {
+      "source": "/vote",
+      "destination": "/vote/index.html"
     }
   ]
 }

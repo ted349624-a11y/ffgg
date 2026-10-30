@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hoshi's Notebook · Chapter Vote</title>
+<meta name="description" content="Member Pass holders decide where Hoshi's story goes next.">
+<meta name="theme-color" content="#f1efe8">
+<link rel="icon" type="image/png" sizes="48x48" href="/ffgg-48.png">
+<link rel="shortcut icon" href="/ffgg.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/ffgg-apple-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shantell+Sans:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f1efe8;--white:#fffdf8;--ink:#111;--muted:#6f6a60;--red:#d0202e;--tone:rgba(17,17,17,.18)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--paper);color:var(--ink);font-family:"Shantell Sans","Comic Sans MS",sans-serif;min-height:100dvh}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.45;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+button{font:inherit;color:var(--ink);-webkit-appearance:none;appearance:none}
+.dg{font-family:"Dela Gothic One","Arial Black",sans-serif;font-weight:400}
+.mono{font-family:"JetBrains Mono",monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,30px) clamp(14px,3vw,30px) 60px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:clamp(15px,1.7vw,19px);letter-spacing:.03em;text-decoration:none;color:var(--ink)}
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.1em;border:2.5px solid var(--ink);background:var(--white);padding:6px 10px;box-shadow:3px 3px 0 var(--ink)}
+.pill i{width:9px;height:9px;border-radius:50%;background:#9b978d}
+.pill.open i{background:var(--red);animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+.hero{margin-top:clamp(20px,4vh,40px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(16px,3vw,36px);align-items:end}
+.k{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.16em;color:var(--muted)}
+h1{font-size:clamp(40px,6.4vw,84px);line-height:.9;margin-top:12px;letter-spacing:-.01em}
+h1 span{color:var(--red)}
+.lead{font-weight:700;font-size:clamp(16px,1.5vw,19px);line-height:1.5;color:#3c3a35;margin-top:14px;max-width:34em}
+.clock{background:var(--white);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:16px 18px}
+.clock .t{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(28px,3.4vw,40px);margin-top:6px;letter-spacing:-.01em}
+.clock .s{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+.opts{margin-top:clamp(22px,4vh,40px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.8vw,22px)}
+.opt{position:relative;text-align:left;cursor:pointer;background:var(--white);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s}
+.opt:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.opt[disabled]{cursor:default}
+.opt[disabled]:hover{transform:none;box-shadow:6px 6px 0 var(--ink)}
+.opt .art{position:relative;aspect-ratio:4/3;overflow:hidden;border-bottom:4px solid var(--ink);background:#fff}
+.opt .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;filter:grayscale(1)}
+.opt .art .fx{position:absolute;inset:-30%;opacity:.38;background:repeating-conic-gradient(from 0deg at 50% 45%,var(--ink) 0deg .45deg,transparent .45deg 3.4deg);
+  -webkit-mask:radial-gradient(circle at 50% 45%,transparent 0 30%,#000 64%);mask:radial-gradient(circle at 50% 45%,transparent 0 30%,#000 64%)}
+.opt .sfx{position:absolute;right:8px;top:8px;writing-mode:vertical-rl;font-size:clamp(28px,3vw,40px);line-height:1;-webkit-text-stroke:7px var(--white);paint-order:stroke fill}
+.opt .letter{position:absolute;left:10px;top:10px;width:42px;height:42px;display:grid;place-items:center;background:var(--ink);color:var(--white);font-size:22px}
+.opt .body{padding:14px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.opt h3{font-size:clamp(20px,2vw,26px);line-height:1}
+.opt p{font-weight:700;font-size:15px;line-height:1.45;color:#3c3a35}
+.opt.sel{background:#fff6f6;box-shadow:6px 6px 0 var(--red);border-color:var(--red)}
+.opt.sel .letter{background:var(--red)}
+.opt.sel::after{content:"YOUR PICK";position:absolute;right:-8px;bottom:-14px;font-family:"Dela Gothic One",sans-serif;font-size:14px;background:var(--red);color:#fff;padding:4px 10px;transform:rotate(-4deg)}
+.opt .bar{margin-top:auto;display:none}
+.res .opt .bar{display:block}
+.bar .row{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;margin-top:8px}
+.bar .track{height:10px;border:2px solid var(--ink);margin-top:4px;position:relative;background:var(--white)}
+.bar .track i{position:absolute;inset:0 auto 0 0;background:var(--ink)}
+.bar .track.r i{background-image:radial-gradient(var(--white) 1px,transparent 1.4px);background-size:5px 5px;background-color:var(--ink)}
+.opt.win{border-color:var(--red);box-shadow:6px 6px 0 var(--red)}
+.opt.win::before{content:"WINNER";position:absolute;left:-8px;top:-14px;z-index:2;font-family:"Dela Gothic One",sans-serif;font-size:15px;background:var(--red);color:#fff;padding:4px 10px;transform:rotate(-4deg)}
+
+.perk{margin-top:clamp(28px,5vh,48px);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(14px,2.4vw,28px);align-items:center;
+  background:var(--ink);color:var(--white);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--red);padding:clamp(16px,2.4vw,26px)}
+.perk .badge{font-family:"Dela Gothic One",sans-serif;font-size:clamp(14px,1.4vw,16px);background:var(--red);color:#fff;padding:8px 12px;transform:rotate(-3deg);white-space:nowrap}
+.perk h2{font-size:clamp(22px,2.6vw,34px);line-height:1}
+.perk p{margin-top:8px;font-weight:700;font-size:clamp(15px,1.4vw,17px);line-height:1.45;color:#e9e6dd}
+.perk .x{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px;line-height:1.7;text-align:right;color:#cfcabe;white-space:nowrap}
+.perk .x b{display:block;font-family:"Dela Gothic One",sans-serif;font-weight:400;font-size:clamp(22px,2.4vw,30px);color:#fff}
+@media (max-width:900px){.perk{grid-template-columns:1fr}.perk .badge{justify-self:start}.perk .x{text-align:left}}
+.lower{margin-top:clamp(28px,5vh,48px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(16px,3vw,32px);align-items:start}
+.panel{background:var(--white);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:clamp(16px,2.4vw,26px)}
+.panel h2{font-size:clamp(22px,2.4vw,30px);line-height:1}
+.act .who{margin-top:14px;font-weight:800;font-size:17px;line-height:1.45;min-height:1.45em}
+.act .who b{background:var(--ink);color:var(--white);padding:0 .25em}
+.act .who .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.1em;padding:3px 8px;margin-right:6px;vertical-align:2px;border:2px solid var(--ink)}
+.act .who .tag.m{background:var(--red);color:#fff;border-color:var(--red)}
+.btn{margin-top:16px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;font-family:"Dela Gothic One",sans-serif;font-size:clamp(17px,1.7vw,20px);
+  color:var(--white);background:var(--red);border:4px solid var(--ink);padding:16px 18px;box-shadow:6px 6px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.btn:disabled{background:#a19e96;cursor:default;transform:none}
+.btn.ok{background:var(--ink)}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.6;min-height:1.6em;color:var(--muted)}
+.msg.err{color:var(--red)}
+.fine{margin-top:16px;border-top:2.5px dashed #cfcabe;padding-top:12px;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.7;color:var(--muted)}
+.fine button{background:none;border:0;text-decoration:underline;cursor:pointer;color:var(--muted);font-size:12px;font-family:inherit}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stats div{border:3px solid var(--ink);padding:8px 10px}
+.stats b{display:block;font-family:"Dela Gothic One",sans-serif;font-weight:400;font-size:clamp(20px,2.2vw,28px);line-height:1.1}
+.stats span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;color:var(--muted)}
+
+.rules ol{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.rules li{display:flex;gap:14px;align-items:flex-start;font-weight:700;font-size:15.5px;line-height:1.45;color:#2a2925}
+.rules li i{flex:none;width:34px;height:34px;display:grid;place-items:center;font-style:normal;font-family:"Dela Gothic One",sans-serif;background:var(--ink);color:var(--white);font-size:16px}
+.rules li:last-child i{background:var(--red)}
+.rules em{font-style:normal;background:var(--ink);color:var(--white);padding:0 .2em}
+.goal{margin-top:18px;border:3px solid var(--ink);padding:12px 14px;display:none}
+.goal.on{display:block}
+.goal .row{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px}
+.goal .track{height:14px;border:2.5px solid var(--ink);margin-top:8px;position:relative;background:var(--white)}
+.goal .track i{position:absolute;inset:0 auto 0 0;background:var(--red)}
+.goal .verdict{margin-top:10px;font-family:"Dela Gothic One",sans-serif;font-size:18px}
+.goal .verdict.yes{color:var(--red)}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .opt{flex-direction:row}
+  .opt .art{aspect-ratio:auto;width:38%;border-bottom:0;border-right:4px solid var(--ink)}
+  .opt .sfx{font-size:24px}
+  .opt .letter{width:34px;height:34px;font-size:18px}
+  .lower{grid-template-columns:1fr}
+  .act{order:-1}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand dg" href="/story">HOSHI'S NOTEBOOK</a>
+    <div class="pill" id="pill"><i></i><span id="pillT">LOADING</span></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="k" id="kicker">CHAPTER 2 · MEMBER VOTE</div>
+      <h1 class="dg" id="title">WHICH PAGE DO WE <span>SAVE FIRST?</span></h1>
+      <p class="lead">The Eraser is still coming. Member Pass holders decide where Hoshi goes next. Readers push it over the line.</p>
+    </div>
+    <div class="clock">
+      <div class="k" id="clockK">VOTING</div>
+      <div class="t" id="clockT">--:--:--</div>
+      <div class="s" id="clockS"></div>
+    </div>
+  </section>
+
+  <section class="opts" id="opts"></section>
+
+  <section class="perk">
+    <div class="badge">MEMBER PASS PERK</div>
+    <div>
+      <h2 class="dg">CLAIM YOUR SHARE OF $FFGG TOKEN FEES.</h2>
+      <p>Member Pass holders can claim the $FFGG token fees. Every pass gets an equal share. Hold more passes, claim more.</p>
+    </div>
+    <div class="x"><b>1 PASS = 1 SHARE</b>2 passes = 2 shares</div>
+  </section>
+
+  <section class="lower">
+    <div class="panel rules">
+      <h2 class="dg">HOW IT WORKS</h2>
+      <ol>
+        <li><i>1</i><span><b>Member Pass holders vote in secret.</b> 1 pass = 1 vote. Nobody sees the count until the vote closes.</span></li>
+        <li><i>2</i><span><b>Readers vote too:</b> any wallet, 1 vote. Every reader vote is 1 point.</span></li>
+        <li><i>3</i><span>The option with the <b>most member votes</b> becomes the next chapter.</span></li>
+        <li><i>4</i><span>If the winning option reaches <b id="thr">777</b> reader point<span id="thrS">s</span>, the <b>members and readers who backed it</b> share a <em>$FFGG</em> airdrop.</span></li>
+      </ol>
+      <div class="goal" id="goal">
+        <div class="row"><span>READER POINTS FOR THE WINNER</span><span id="goalN">0 / 777</span></div>
+        <div class="track"><i id="goalBar"></i></div>
+        <div class="verdict" id="goalV"></div>
+      </div>
+    </div>
+
+    <div class="panel act">
+      <h2 class="dg" id="actH">CAST YOUR VOTE</h2>
+      <div class="who" id="who">Connect your wallet. We check for a Member Pass automatically.</div>
+      <button class="btn" id="btn" disabled><span id="btnT">LOADING…</span><span id="btnI"></span></button>
+      <div class="msg" id="msg"></div>
+      <div class="stats" id="stats"><div><b id="sM">–</b><span>MEMBERS VOTED</span></div><div><b id="sW">–</b><span>PASS VOTES</span></div><div><b id="sR">–</b><span>READERS VOTED</span></div></div>
+      <div class="fine" id="fine">Signing is free. No gas, no transaction. One vote per wallet per round.</div>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+import { VOTE, voteMessage } from "/lib/vote-shared.js";
+
+const $ = id => document.getElementById(id);
+const eth = window.ethereum;
+let S = null, account = null, me = null, pick = null, busy = false;
+const short = a => a.slice(0, 6) + "…" + a.slice(-4);
+const store = { get(k) { try { return localStorage.getItem("ffgg_vote_" + k) } catch (e) { return null } }, set(k, v) { try { localStorage.setItem("ffgg_vote_" + k, v) } catch (e) {} } };
+
+/* ---------- render options ---------- */
+function drawOptions() {
+  const opts = (S && S.options) || VOTE.options, res = S && S.results, closed = S && S.phase === "closed";
+  const maxM = res ? Math.max(1, ...Object.values(res.members)) : 1, maxR = res ? Math.max(1, ...Object.values(res.readers)) : 1;
+  const mine = store.get(roundId() + "_" + (account || "").toLowerCase());
+  $("opts").classList.toggle("res", !!(closed && res));
+  $("opts").innerHTML = opts.map(o => {
+    const sel = (pick === o.key && !closed) || (closed && mine === o.key && !res?.winner), win = closed && res && res.winner === o.key;
+    return `<button class="opt ${sel ? "sel" : ""} ${win ? "win" : ""}" data-k="${o.key}" ${canPick() ? "" : "disabled"}>
+      <div class="art"><div class="fx"></div><img src="${o.img}" style="object-position:${o.pos}" alt=""><div class="letter dg">${o.key}</div><div class="sfx dg">${o.sfx}</div></div>
+      <div class="body"><h3 class="dg">${o.title}</h3><p>${o.teaser}</p>
+        ${res ? `<div class="bar"><div class="row"><span>MEMBERS</span><span>${res.members[o.key]}</span></div><div class="track"><i style="width:${res.members[o.key] / maxM * 100}%"></i></div>
+        <div class="row"><span>READERS</span><span>${res.readers[o.key]}</span></div><div class="track r"><i style="width:${res.readers[o.key] / maxR * 100}%"></i></div></div>` : ""}
+      </div></button>`;
+  }).join("");
+  $("opts").querySelectorAll(".opt").forEach(b => b.onclick = () => { if (!canPick()) return; pick = b.dataset.k; drawOptions(); drawAction(); });
+}
+const roundId = () => (S && S.round.id) || VOTE.round.id;
+const canPick = () => S && S.phase === "open" && !(me && me.hasVoted) && !busy;
+
+/* ---------- state ---------- */
+async function load() {
+  try {
+    const r = await fetch("/api/vote" + (account ? "?wallet=" + account : ""), { cache: "no-store" });
+    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+    S = j; me = j.me || (account ? me : null);
+  } catch (e) {
+    S = S || { phase: "preview", round: VOTE.round, options: VOTE.options, readerThreshold: VOTE.readerThreshold, storage: false };
+    if (account) msg("Could not reach the vote server: " + e.message, true);
+  }
+  render();
+}
+function render() {
+  const ph = S.phase, r = S.round;
+  $("kicker").textContent = `CHAPTER ${r.chapter} · MEMBER VOTE`;
+  const t = r.title.toUpperCase().split(" "), cut = Math.ceil(t.length / 2);
+  $("title").innerHTML = t.slice(0, cut).join(" ") + " <span>" + t.slice(cut).join(" ") + "</span>";
+  $("thr").textContent = S.readerThreshold; $("thrS").textContent = S.readerThreshold == 1 ? "" : "s";
+  $("pill").className = "pill " + ph;
+  $("pillT").textContent = { preview: "COMING SOON", soon: "OPENS SOON", open: "VOTING OPEN", closed: "VOTE CLOSED" }[ph];
+  const tot = S.totals; $("sM").textContent = tot ? tot.members : "–"; $("sW").textContent = tot ? tot.memberVotes : "–"; $("sR").textContent = tot ? tot.readers : "–";
+  // goal box after close
+  const res = S.results, g = $("goal");
+  g.classList.toggle("on", ph === "closed" && !!res);
+  if (ph === "closed" && res) {
+    const n = res.readerPoints, th = S.readerThreshold;
+    $("goalN").textContent = `${n} / ${th}`; $("goalBar").style.width = Math.min(100, n / th * 100) + "%";
+    $("goalV").textContent = !res.winner ? "No member votes were cast." : res.unlocked ? `✓ AIRDROP UNLOCKED: backers of ${res.winner} share $FFGG` : `Goal missed. The story goes on with ${res.winner}, no airdrop this round.`;
+    $("goalV").className = "verdict " + (res.unlocked ? "yes" : "");
+  }
+  drawOptions(); drawAction(); tick();
+}
+function fmt(ms) { const s = Math.max(0, Math.floor(ms / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60, p = n => String(n).padStart(2, "0");
+  return (d ? d + "d " : "") + p(h) + ":" + p(m) + ":" + p(x); }
+const when = iso => new Date(iso).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC";
+function tick() {
+  if (!S) return; const r = S.round, now = Date.now(), ph = S.phase;
+  if (ph === "preview") { $("clockK").textContent = "VOTING"; $("clockT").textContent = "SOON"; $("clockS").textContent = "Opens after the Member Pass mint."; return; }
+  if (ph === "soon") { $("clockK").textContent = "OPENS IN"; $("clockT").textContent = r.opensAt ? fmt(Date.parse(r.opensAt) - now) : "SOON"; }
+  if (ph === "open") { $("clockK").textContent = r.closesAt ? "CLOSES IN" : "VOTING"; $("clockT").textContent = r.closesAt ? fmt(Date.parse(r.closesAt) - now) : "OPEN"; }
+  if (ph === "closed") { $("clockK").textContent = "RESULT"; $("clockT").textContent = S.results && S.results.winner ? "OPTION " + S.results.winner : "CLOSED"; }
+  $("clockS").textContent = [r.opensAt && "Opens " + when(r.opensAt), r.closesAt && "Closes " + when(r.closesAt)].filter(Boolean).join(" · ");
+  if ((ph === "soon" && r.opensAt && now >= Date.parse(r.opensAt)) || (ph === "open" && r.closesAt && now >= Date.parse(r.closesAt))) load();
+}
+setInterval(tick, 1000);
+setInterval(() => { if (!busy && S && S.phase === "open") load(); }, 30000);
+
+/* ---------- action panel ---------- */
+function msg(t, err) { $("msg").innerHTML = t || ""; $("msg").classList.toggle("err", !!err); }
+function btn(text, enabled, icon = "", cls = "") { const b = $("btn"); b.disabled = !enabled; b.className = "btn " + cls; $("btnT").textContent = text; $("btnI").innerHTML = icon; }
+function drawAction() {
+  if (busy) return;
+  const ph = S.phase, mine = account && store.get(roundId() + "_" + account.toLowerCase());
+  // who
+  if (!account) $("who").innerHTML = ph === "preview" ? "Voting opens after the Member Pass mint. Read the options and pick your side." : "Connect your wallet. We check for a Member Pass automatically.";
+  else if (me) $("who").innerHTML = me.role === "member"
+    ? `<span class="tag m">MEMBER</span>${short(account)} holds <b>${me.weight} Member Pass${me.weight > 1 ? "es" : ""}</b>. Your vote counts ×${me.weight}.`
+    : `<span class="tag">READER</span>${short(account)} has no Member Pass, so you vote as a <b>reader</b> (1 point).`;
+  // fine print
+  $("fine").innerHTML = "Signing is free. No gas, no transaction. One vote per wallet per round." +
+    (S.contract ? `<br>Member Pass: ${short(S.contract)}${S.chain ? " on " + S.chain : ""}` : "") +
+    (account ? `<br>${short(account)} · <button id="disc">disconnect</button>` : "");
+  const d = $("disc"); if (d) d.onclick = () => { account = null; me = null; pick = null; msg(""); load(); };
+  // button
+  if (ph === "preview") return btn("VOTING OPENS AFTER THE MINT", false);
+  if (ph === "closed") return btn(S.results && S.results.winner ? `CHAPTER ${S.round.chapter}: ${(S.options.find(o => o.key === S.results.winner) || {}).title || ""}`.toUpperCase() : "VOTE CLOSED", false, "", "ok");
+  if (!account) return btn(ph === "soon" ? "CONNECT WALLET (VOTING OPENS SOON)" : "CONNECT WALLET", true, "→");
+  if (me && me.hasVoted) { $("actH").textContent = "VOTE SEALED"; return btn(mine ? `YOU VOTED ${mine} ✓` : "YOU HAVE VOTED ✓", false, "", "ok"); }
+  if (ph === "soon") return btn("VOTING NOT OPEN YET", false);
+  if (!S.storage) return btn("VOTING NOT CONNECTED YET", false);
+  if (!pick) return btn("PICK AN OPTION ABOVE", false, "↑");
+  btn(`SIGN & VOTE ${pick}`, true, "✍");
+}
+
+async function connect() {
+  if (!eth) { msg("No wallet found. Open this page in your wallet app's browser (MetaMask, Rabby, Coinbase Wallet) or install a wallet extension.", true); return; }
+  try {
+    const a = await eth.request({ method: "eth_requestAccounts" }); account = a[0] || null; msg("Checking your wallet for a Member Pass…");
+    await load(); msg("");
+  } catch (e) { msg(e.code === 4001 ? "Connection cancelled." : "Could not connect: " + (e.message || e), true); }
+}
+const toHex = s => "0x" + [...new TextEncoder().encode(s)].map(b => b.toString(16).padStart(2, "0")).join("");
+async function vote() {
+  busy = true; drawOptions(); btn("CONFIRM IN YOUR WALLET…", false, '<span class="spin"></span>'); msg("");
+  const issued = new Date().toISOString(), text = voteMessage({ round: S.round.id, choice: pick, wallet: account, issued });
+  let signature;
+  try { signature = await eth.request({ method: "personal_sign", params: [toHex(text), account] }); }
+  catch (e) { busy = false; msg(e.code === 4001 ? "Signature cancelled." : "Could not sign: " + (e.message || e), true); drawOptions(); drawAction(); return; }
+  btn("SEALING YOUR VOTE…", false, '<span class="spin"></span>');
+  try {
+    const r = await fetch("/api/vote", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ wallet: account, choice: pick, issued, signature }) });
+    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+    store.set(roundId() + "_" + account.toLowerCase(), pick);
+    busy = false; msg(j.role === "member" ? `Sealed. Your ${j.weight} pass vote${j.weight > 1 ? "s" : ""} for ${pick} will be revealed when the vote closes.` : `Sealed. Your reader point for ${pick} is in.`);
+    await load();
+  } catch (e) { busy = false; msg(e.message, true); drawOptions(); drawAction(); }
+}
+$("btn").onclick = () => { if (busy) return; if (!account) return connect(); if (S.phase === "open" && pick && !(me && me.hasVoted)) return vote(); };
+if (eth && eth.on) eth.on("accountsChanged", a => { account = a[0] || null; me = null; pick = null; load(); });
+if (eth) eth.request({ method: "eth_accounts" }).then(a => { if (a && a[0]) { account = a[0]; load(); } }).catch(() => {});
+
+drawOptions(); load();
+</script>
+</body>
+</html>
