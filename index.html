@@ -1,6 +1,66 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>FFGG</title>
-<meta http-equiv="refresh" content="0; url=/story">
-<link rel="canonical" href="/story">
-<script>location.replace("/story")</script>
-</head><body><a href="/story">Hoshi's Notebook</a></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FFGG · Hoshi's Notebook</title>
+<meta name="description" content="Read Hoshi's story and vote on what happens next.">
+<meta name="theme-color" content="#f1efe8">
+<link rel="icon" type="image/png" sizes="48x48" href="/ffgg-48.png">
+<link rel="shortcut icon" href="/ffgg.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/ffgg-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/ffgg-apple-180.png">
+<link rel="manifest" href="/ffgg.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shantell+Sans:wght@700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f1efe8;--white:#fffdf8;--ink:#111;--muted:#6f6a60;--red:#d0202e}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:"Shantell Sans",sans-serif;min-height:100dvh;display:flex;flex-direction:column;padding:clamp(14px,3vw,30px)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.45;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.dg{font-family:"Dela Gothic One","Arial Black",sans-serif;font-weight:400}
+.wrap{flex:1;width:100%;max-width:1100px;margin:0 auto;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-size:clamp(15px,1.7vw,19px);letter-spacing:.03em}
+.x{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.1em;color:var(--ink);text-decoration:none;border:2.5px solid var(--ink);background:var(--white);padding:6px 10px;box-shadow:3px 3px 0 var(--ink)}
+h1{font-size:clamp(40px,7vw,88px);line-height:.9;margin-top:clamp(20px,5vh,48px)}
+h1 span{color:var(--red)}
+.grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.4vw,26px);margin-top:clamp(18px,4vh,36px);min-height:0}
+.p{position:relative;display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--white);border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);overflow:hidden;transition:transform .12s,box-shadow .12s;min-height:300px}
+.p:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--ink)}
+.p:active{transform:translate(3px,3px);box-shadow:4px 4px 0 var(--ink)}
+.p .art{position:relative;flex:1;min-height:180px;border-bottom:5px solid var(--ink);overflow:hidden;background:#fff}
+.p .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;filter:grayscale(1)}
+.p .fx{position:absolute;inset:-30%;opacity:.38;background:repeating-conic-gradient(from 0deg at 50% 45%,var(--ink) 0deg .45deg,transparent .45deg 3.4deg);
+  -webkit-mask:radial-gradient(circle at 50% 45%,transparent 0 30%,#000 64%);mask:radial-gradient(circle at 50% 45%,transparent 0 30%,#000 64%)}
+.p .sfx{position:absolute;right:12px;top:12px;writing-mode:vertical-rl;font-size:clamp(38px,5vw,60px);line-height:1;-webkit-text-stroke:9px var(--white);paint-order:stroke fill}
+.p .body{padding:clamp(14px,2.2vw,22px);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.p h2{font-size:clamp(26px,3.2vw,40px);line-height:1}
+.p .k{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);margin-top:6px}
+.p .go{flex:none;width:56px;height:56px;display:grid;place-items:center;background:var(--ink);color:var(--white);font-size:26px}
+.p.vote .go{background:var(--red)}
+.p.vote{box-shadow:8px 8px 0 var(--red)}
+.p.vote:hover{box-shadow:11px 11px 0 var(--red)}
+@media (max-width:760px){.grid{grid-template-columns:1fr}.p{min-height:250px}.p .art{min-height:150px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><div class="brand dg">FFGG · HOSHI'S NOTEBOOK</div><a class="x" href="https://x.com/FFggRH0x" target="_blank" rel="noopener">@FFggRH0x</a></header>
+  <h1 class="dg">READ THE PAGE. <span>DECIDE THE NEXT.</span></h1>
+  <div class="grid">
+    <a class="p" href="/story">
+      <div class="art"><div class="fx"></div><img src="/story/img/stand.webp" alt="" style="object-position:50% 16%"><div class="sfx dg">ジー</div></div>
+      <div class="body"><div><h2 class="dg">READ THE STORY</h2><div class="k">CHAPTER 1 · BLANK PAGE</div></div><div class="go dg">→</div></div>
+    </a>
+    <a class="p vote" href="/vote">
+      <div class="art"><div class="fx"></div><img src="/story/img/point.webp" alt="" style="object-position:50% 30%"><div class="sfx dg">ビシッ</div></div>
+      <div class="body"><div><h2 class="dg">CAST YOUR VOTE</h2><div class="k">CHAPTER 2 · MEMBER VOTE</div></div><div class="go dg">→</div></div>
+    </a>
+  </div>
+</div>
+</body>
+</html>
