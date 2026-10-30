@@ -142,7 +142,7 @@ button{color:var(--ink);-webkit-appearance:none;appearance:none}
 <div class="book">
   <header class="top">
     <div class="t dg">HOSHI'S NOTEBOOK <span>CHAPTER 1 · <i id="chName">BLANK PAGE</i></span></div>
-    <div class="tools"><button id="snd">SOUND ON</button><button id="restart">↺</button></div>
+    <div class="tools"><button id="restart">↺</button></div>
   </header>
 
   <main class="page" id="page">
@@ -239,112 +239,6 @@ const UI = {
   en: { sub: "Your choices shape the story.", ch: "BLANK PAGE", tap: "TAP TO CONTINUE", choose: "CHOOSE", k: "END OF CHAPTER 1 · PREVIEW", h: "TO BE CONTINUED…", your: "Your choice",
         p: "Member Pass holders secretly vote on the questions Hoshi asks next — that is how the story takes shape. Readers play the chapter and make their choice. The members behind the most-chosen question share a $FFGG airdrop, and part of it goes to the readers too.", vote: "FOLLOW FOR CHAPTER 2 ↗", replay: "TRY THE OTHER PATH ↺" },
 };
-
-/* ---------- sound: everything is synthesised with Web Audio, no files ---------- */
-const Snd = (() => {
-  let ac = null, master = null, noise = null, scrubSrc = null, scrubGain = null, scrubFilt = null, amb = null, lastTick = 0, lastBlip = 0;
-  let on = true; try { on = localStorage.getItem("hoshi_vn_sound") !== "off"; } catch (e) {}
-
-  function unlock() {
-    if (ac) { if (ac.state === "suspended") ac.resume(); return; }
-    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-    ac = new AC(); master = ac.createGain(); master.gain.value = on ? .9 : 0; master.connect(ac.destination);
-    // one second of white noise, reused by every noisy sound
-    noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate); const d = noise.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    ambient();
-  }
-  const ok = () => ac && on;
-  function env(gainNode, t, a, peak, dec) { const g = gainNode.gain; g.cancelScheduledValues(t); g.setValueAtTime(0.0001, t); g.exponentialRampToValueAtTime(peak, t + a); g.exponentialRampToValueAtTime(0.0001, t + a + dec); }
-  function noiseSrc(loop) { const s = ac.createBufferSource(); s.buffer = noise; s.loop = !!loop; s.playbackRate.value = .8 + Math.random() * .4; return s; }
-
-  // soft typewriter tick; Hoshi a little higher than narration
-  function blip(narr) {
-    if (!ok()) return; const t = ac.currentTime; if (t - lastBlip < .035) return; lastBlip = t;
-    const o = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter();
-    o.type = "triangle"; o.frequency.value = (narr ? 230 : 520) * (1 + (Math.random() - .5) * .12);
-    f.type = "lowpass"; f.frequency.value = narr ? 900 : 1800;
-    o.connect(f); f.connect(g); g.connect(master); env(g, t, .004, narr ? .05 : .045, .05); o.start(t); o.stop(t + .08);
-  }
-  // paper rustle for a new panel
-  function paper() {
-    if (!ok()) return; const t = ac.currentTime, s = noiseSrc(), f = ac.createBiquadFilter(), g = ac.createGain();
-    f.type = "bandpass"; f.Q.value = .8; f.frequency.setValueAtTime(800, t); f.frequency.exponentialRampToValueAtTime(3800, t + .28);
-    s.connect(f); f.connect(g); g.connect(master); env(g, t, .03, .16, .32); s.start(t); s.stop(t + .45);
-  }
-  // impacts that match the manga SFX
-  function impact(txt) {
-    if (!ok() || !txt) return; const t = ac.currentTime;
-    if (txt === "ゴゴゴ" || txt === "ゴシゴシ") {           // low rumble boom
-      const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(38, t + .9);
-      o.connect(g); g.connect(master); env(g, t, .02, .35, 1.1); o.start(t); o.stop(t + 1.3);
-      const s = noiseSrc(), f = ac.createBiquadFilter(), g2 = ac.createGain(); f.type = "lowpass"; f.frequency.value = 260;
-      s.connect(f); f.connect(g2); g2.connect(master); env(g2, t, .05, .22, .9); s.start(t); s.stop(t + 1);
-    } else if (txt === "ビシッ") {                          // sharp whip
-      const s = noiseSrc(), f = ac.createBiquadFilter(), g = ac.createGain(); f.type = "highpass"; f.frequency.setValueAtTime(1200, t); f.frequency.exponentialRampToValueAtTime(5000, t + .08);
-      s.connect(f); f.connect(g); g.connect(master); env(g, t, .004, .3, .12); s.start(t); s.stop(t + .2);
-      const o = ac.createOscillator(), g2 = ac.createGain(); o.type = "square"; o.frequency.setValueAtTime(900, t); o.frequency.exponentialRampToValueAtTime(220, t + .1);
-      o.connect(g2); g2.connect(master); env(g2, t, .003, .06, .1); o.start(t); o.stop(t + .15);
-    } else if (txt === "ニコッ") {                          // little sparkle
-      [1320, 1760, 2640].forEach((fr, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = fr;
-        o.connect(g); g.connect(master); env(g, t + i * .06, .005, .07, .35); o.start(t + i * .06); o.stop(t + i * .06 + .45); });
-    } else if (txt === "ジー") {                            // a stare: thin buzzing tone
-      const o = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter(); o.type = "sawtooth"; o.frequency.value = 180;
-      f.type = "bandpass"; f.frequency.value = 1400; f.Q.value = 6; o.connect(f); f.connect(g); g.connect(master); env(g, t, .15, .05, .7); o.start(t); o.stop(t + 1);
-    }
-  }
-  // continuous rubbing noise, level follows the eraser's speed
-  function scrub(level) {
-    if (!ac) return;
-    if (level > 0 && on && !scrubSrc) {
-      scrubSrc = noiseSrc(true); scrubFilt = ac.createBiquadFilter(); scrubGain = ac.createGain();
-      scrubFilt.type = "bandpass"; scrubFilt.Q.value = 1.2; scrubFilt.frequency.value = 1100; scrubGain.gain.value = 0;
-      scrubSrc.connect(scrubFilt); scrubFilt.connect(scrubGain); scrubGain.connect(master); scrubSrc.start();
-    }
-    if (!scrubSrc) return;
-    const t = ac.currentTime, v = Math.max(0, Math.min(1, level));
-    scrubGain.gain.setTargetAtTime(v * .32, t, .03); scrubFilt.frequency.setTargetAtTime(700 + v * 1500, t, .05);
-    if (level <= 0) { const s = scrubSrc; scrubSrc = null; scrubGain.gain.setTargetAtTime(0, t, .06); setTimeout(() => { try { s.stop() } catch (e) {} }, 400); }
-  }
-  // crumb landing
-  function tick() {
-    if (!ok()) return; const t = ac.currentTime; if (t - lastTick < .045) return; lastTick = t;
-    const s = noiseSrc(), f = ac.createBiquadFilter(), g = ac.createGain(); f.type = "highpass"; f.frequency.value = 3000 + Math.random() * 3000;
-    s.connect(f); f.connect(g); g.connect(master); env(g, t, .001, .05 + Math.random() * .04, .03); s.start(t); s.stop(t + .05);
-  }
-  // choice: thump + click, then a ding for the stat
-  function choose() {
-    if (!ok()) return; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(55, t + .12);
-    o.connect(g); g.connect(master); env(g, t, .003, .4, .16); o.start(t); o.stop(t + .22);
-    [880, 1320].forEach((fr, i) => { const o2 = ac.createOscillator(), g2 = ac.createGain(), st = t + .18 + i * .1; o2.type = "sine"; o2.frequency.value = fr;
-      o2.connect(g2); g2.connect(master); env(g2, st, .005, .1, .5); o2.start(st); o2.stop(st + .6); });
-  }
-  // end card: soft suspended chord
-  function chord() {
-    if (!ok()) return; const t = ac.currentTime;
-    [220, 329.6, 440, 587.3].forEach((fr, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; o.frequency.value = fr;
-      o.connect(g); g.connect(master); env(g, t + i * .07, .08, .05, 2.2); o.start(t + i * .07); o.stop(t + 2.6); });
-  }
-  // quiet, uneasy drone under everything
-  function ambient() {
-    if (amb) return; const g = ac.createGain(); g.gain.value = 0; g.connect(master);
-    const o1 = ac.createOscillator(), o2 = ac.createOscillator(), lfo = ac.createOscillator(), lg = ac.createGain();
-    o1.type = "sine"; o1.frequency.value = 55; o2.type = "sine"; o2.frequency.value = 82.6;
-    lfo.frequency.value = .09; lg.gain.value = .008; lfo.connect(lg); lg.connect(g.gain);
-    const s = noiseSrc(true), f = ac.createBiquadFilter(), ng = ac.createGain(); f.type = "lowpass"; f.frequency.value = 180; ng.gain.value = .25;
-    s.connect(f); f.connect(ng); ng.connect(g);
-    o1.connect(g); o2.connect(g); o1.start(); o2.start(); lfo.start(); s.start();
-    g.gain.setTargetAtTime(.018, ac.currentTime, 2); amb = g;
-  }
-  function toggle() {
-    on = !on; try { localStorage.setItem("hoshi_vn_sound", on ? "on" : "off"); } catch (e) {}
-    if (master) master.gain.setTargetAtTime(on ? .9 : 0, ac.currentTime, .05);
-    if (!on) scrub(0);
-    return on;
-  }
-  return { unlock, blip, paper, impact, scrub, tick, choose, chord, toggle, get on() { return on } };
-})();
 
 /* ---------- eraser scene: a drawn street that really gets rubbed out ---------- */
 const Erase = (() => {
@@ -501,11 +395,10 @@ const Erase = (() => {
     if (el > DELAY && p < 1) { if (prev) rub(prev, pos); }
     const vx = prev ? (pos.x - prev.x) / Math.max(dt, .001) : 0, vy = prev ? (pos.y - prev.y) / Math.max(dt, .001) : 0;
     prev = pos;
-    if (el > DELAY && p < 1) Snd.scrub(Math.min(1, .25 + Math.hypot(vx, vy) / (4.3 * H))); else if (p >= 1) Snd.scrub(0);
     // crumbs physics: fall, bounce once, settle on the road
     const floor = H * .95;
     for (const c of crumbs) { if (c.rest) continue; c.vy += 1500 * dpr * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += c.vr * dt; c.vx *= .985;
-      if (c.y > floor - c.s * .3) { c.y = floor - c.s * .3 - Math.random() * 6 * dpr; if (Math.abs(c.vy) > 250 * dpr) { c.vy *= -.25; c.vx *= .5; } else { c.rest = true; Snd.tick(); } } }
+      if (c.y > floor - c.s * .3) { c.y = floor - c.s * .3 - Math.random() * 6 * dpr; if (Math.abs(c.vy) > 250 * dpr) { c.vy *= -.25; c.vx *= .5; } else c.rest = true; } }
     if (crumbs.length > 420) crumbs = crumbs.filter((c, i) => !c.rest || i > crumbs.length - 380);
     // little "ゴシ" pops next to the eraser
     if (el > DELAY && p < .95 && Math.floor(el * 2.2) !== Math.floor((el - dt) * 2.2)) pops.push({ x: pos.x + 40 * dpr, y: pos.y - 60 * dpr, life: .7 });
@@ -527,7 +420,7 @@ const Erase = (() => {
     W = cv.width = Math.round(r.width * dpr); H = cv.height = Math.round(r.height * dpr);
     drawStreet(); crumbs = []; pops = []; prev = null; running = true; t0 = last = performance.now(); raf = requestAnimationFrame(frame);
   }
-  function stop() { running = false; cancelAnimationFrame(raf); Snd.scrub(0); }
+  function stop() { running = false; cancelAnimationFrame(raf); }
   addEventListener("resize", () => { if (running) start(); });
   return { start, stop };
 })();
@@ -571,7 +464,6 @@ function type(html, narr) {
     for (const [ch, w] of chars.slice(0, i)) { if (w !== open) { if (open) out += `</${open}>`; if (w) out += `<${w}>`; open = w; } out += ch === "<" ? "&lt;" : ch; }
     if (open) out += `</${open}>`;
     el.innerHTML = out;
-    const ch = chars[i - 1]; if (ch && ch[0].trim() && i % 2) Snd.blip(!!narr);
     if (i >= chars.length) finish();
   }, 26);
 }
@@ -587,7 +479,7 @@ function play() {
   if ("art" in st) setArt(st.art);
   if ("bg" in st || "art" in st) setBg(st.bg || null);
   $("vig").style.opacity = st.vig ? .7 : 0;
-  if (st.sfx !== undefined || "art" in st) { sfx(st.sfx); pageNo++; $("pno").textContent = "p." + pageNo; Snd.paper(); if (st.sfx) setTimeout(() => Snd.impact(st.sfx), 140); }
+  if (st.sfx !== undefined || "art" in st) { sfx(st.sfx); pageNo++; $("pno").textContent = "p." + pageNo; }
   if (st.shake) { const p = $("panel"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake"); }
   $("choices").classList.remove("on"); $("choices").innerHTML = "";
   $("hintTxt").textContent = UI[lang].tap;
@@ -605,7 +497,7 @@ function play() {
   dots();
 }
 function choose(c) {
-  Snd.choose(); lastChoice = c; const s = $("stat"); s.textContent = L(c.stat); s.classList.add("on"); setTimeout(() => s.classList.remove("on"), 2200);
+  lastChoice = c; const s = $("stat"); s.textContent = L(c.stat); s.classList.add("on"); setTimeout(() => s.classList.remove("on"), 2200);
   scene = c.go; idx = 0; play();
 }
 function advance() {
@@ -620,16 +512,13 @@ function showEnd(key) {
   $("ePath").textContent = lastChoice ? lastChoice.key : "–"; $("ePathT").textContent = L(ENDS[key].path);
   $("eP").textContent = u.p; $("eVote").textContent = u.vote; $("eVote").href = "https://x.com/intent/follow?screen_name=" + HANDLE;
   $("eReplay").textContent = u.replay;
-  $("end").classList.add("on"); Snd.chord();
+  $("end").classList.add("on");
 }
 function restart() { $("end").classList.remove("on"); scene = "start"; idx = 0; artKey = "_"; pageNo = 0; lastChoice = null; play(); }
 function applyLang() {
   document.documentElement.lang = "en"; $("chName").textContent = UI[lang].ch; $("chBig").textContent = UI[lang].ch; $("chSub").textContent = UI[lang].sub;
 }
 
-addEventListener("pointerdown", () => Snd.unlock()); addEventListener("keydown", () => Snd.unlock());
-$("snd").textContent = Snd.on ? "SOUND ON" : "SOUND OFF";
-$("snd").onclick = e => { e.stopPropagation(); Snd.unlock(); $("snd").textContent = Snd.toggle() ? "SOUND ON" : "SOUND OFF"; };
 $("page").addEventListener("click", advance);
 addEventListener("keydown", e => { if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); advance(); } });
 $("restart").onclick = e => { e.stopPropagation(); restart(); };
