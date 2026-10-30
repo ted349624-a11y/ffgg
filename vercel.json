@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/claim", "destination": "/claim/index.html" }
+    {
+      "source": "/claim",
+      "destination": "/claim/index.html"
+    },
+    {
+      "source": "/story",
+      "destination": "/story/index.html"
+    }
   ]
 }
