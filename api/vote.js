@@ -5,7 +5,7 @@
 //   GET  /api/vote?key=ADMIN_KEY   full tallies at any time
 //   GET  /api/vote?key=ADMIN_KEY&export=csv   voter list for the airdrop
 // Storage: Upstash Redis (Vercel Marketplace) via its REST API.
-import { verifyMessage, getAddress } from "ethers";
+import { verifyMessage, getAddress, Interface } from "ethers";
 import { VOTE as BASE, voteMessage, phaseAt, passReady } from "../lib/vote-shared.js";
 
 // Upstash env names depend on the prefix chosen when connecting (KV_, STORAGE_, …) — accept any.
@@ -31,22 +31,38 @@ async function kv(...cmd) {
 const hashToObj = r => { if (!r) return {}; if (!Array.isArray(r)) return r; const o = {}; for (let i = 0; i < r.length; i += 2) o[r[i]] = r[i + 1]; return o; };
 
 const pad = v => BigInt(v).toString(16).padStart(64, "0");
-async function passBalance(cfg, wallet) {
-  if (!passReady(cfg)) return 0n;            // pass not live yet: everyone is a reader
-  const n = cfg.nft, data = n.standard === "erc1155"
-    ? "0x00fdd58e" + pad(wallet) + pad(n.tokenId || 0)     // balanceOf(address,uint256)
-    : "0x70a08231" + pad(wallet);                          // balanceOf(address)
-  const tag = n.snapshotBlock ? "0x" + Number(n.snapshotBlock).toString(16) : "latest";
+const I1155 = new Interface(["function balanceOfBatch(address[] accounts, uint256[] ids) view returns (uint256[])"]);
+const SCAN_IDS = Array.from({ length: 33 }, (_, i) => i);   // edition ids checked when no token id is set
+
+async function ethCall(cfg, data) {
+  const n = cfg.nft, tag = n.snapshotBlock ? "0x" + Number(n.snapshotBlock).toString(16) : "latest";
   let lastErr;
   for (const url of n.rpc) {
     try {
       const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: n.contract, data }, tag] }) });
-      const j = await r.json(); if (j.error) throw new Error(j.error.message);
-      return BigInt(j.result && j.result !== "0x" ? j.result : "0x0");
-    } catch (e) { lastErr = e; }
+      const j = await r.json(); if (j.error) throw Object.assign(new Error(j.error.message), { revert: true });
+      return j.result;
+    } catch (e) { lastErr = e; if (e.revert) throw e; }
   }
-  throw new Error("could not read Member Pass balance" + (lastErr ? ": " + lastErr.message : ""));
+  throw new Error("could not reach the chain" + (lastErr ? ": " + lastErr.message : ""));
+}
+let detected = null;   // cached per server instance
+async function standard(cfg) {
+  if (cfg.nft.standard && cfg.nft.standard !== "auto" && cfg.nft.standard !== "erc1155") return cfg.nft.standard;
+  if (detected) return detected;
+  const supports = async id => { try { return BigInt(await ethCall(cfg, "0x01ffc9a7" + id.padEnd(64, "0"))) === 1n; } catch { return false; } };
+  detected = (await supports("80ac58cd")) ? "erc721" : "erc1155";
+  return detected;
+}
+async function passBalance(cfg, wallet) {
+  if (!passReady(cfg)) return 0n;            // pass not live yet: everyone is a reader
+  const std = await standard(cfg), n = cfg.nft;
+  if (std === "erc721") return BigInt(await ethCall(cfg, "0x70a08231" + pad(wallet)) || "0x0");
+  if (n.tokenId !== null && n.tokenId !== "" && n.tokenId !== undefined)
+    return BigInt(await ethCall(cfg, "0x00fdd58e" + pad(wallet) + pad(n.tokenId)) || "0x0");
+  const res = await ethCall(cfg, I1155.encodeFunctionData("balanceOfBatch", [SCAN_IDS.map(() => wallet), SCAN_IDS]));
+  return I1155.decodeFunctionResult("balanceOfBatch", res)[0].reduce((a, b) => a + b, 0n);
 }
 
 function publicRound(cfg, phase) {
