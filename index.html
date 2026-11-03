@@ -118,8 +118,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 const CONFIG = {
   handle:  "FFggRH0x",
   tweetId: "2115940474825658530",   // post ID for like & comment
-  formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSco_47UwaCrhHHu0w8Jx1Ie149OjriNMSDH4lj0asHQHMlRzg/formResponse",
-  fields: {x:"entry.1025636690", permit:"entry.1586949640", time:"entry.1614473743", wallet:"entry.1137849547"},
+  api: "/api/whitelist",           // sign-ups are stored in the project's Upstash Redis
   wait: 3        // seconds per task
 };
 /* ================================== */
@@ -241,13 +240,14 @@ async function main(){
     while(true){
       wa=await ask("wallet@ffgg:~$",{placeholder:"0x…",paste:true,validate:v=>!v.startsWith("0x")?"address must start with 0x":v.length!==42?`address must be 42 characters (got ${v.length})`:!ADDR.test(v)?"invalid characters in address":null});
       store.set("wa",wa);
-      if(!CONFIG.formUrl){await line(`<span class="err">✗ whitelist server not connected yet — try again later</span>`,{type:false});continue}
       await line(`<span class="dim">transmitting…</span>`);
       try{
-        const F=CONFIG.fields,body=new URLSearchParams();body.append(F.x,"@"+xu);body.append(F.wallet,wa);body.append(F.permit,permitId(wa));body.append(F.time,new Date().toLocaleString("tr-TR",{timeZone:"Europe/Istanbul"}));
-        await fetch(CONFIG.formUrl,{method:"POST",mode:"no-cors",body});
+        const r=await fetch(CONFIG.api,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({x:xu,wallet:wa})});
+        let j={};try{j=await r.json()}catch(e){}
+        if(!r.ok)throw new Error(j.error||("server error "+r.status));
+        if(j.already)await line(`<span class="dim">this wallet was already on the list</span>`,{type:false});
         store.set("submitted",true);store.set("issued",Date.now());break;
-      }catch(e){await line(`<span class="err">✗ network error — press enter to retry</span>`,{type:false})}
+      }catch(e){await line(`<span class="err">✗ ${esc(String(e.message||"network error").replace(/\.$/,""))}. press enter to retry</span>`,{type:false})}
     }
   }else{
     await line(`<span class="p">wallet@ffgg:~$</span> ${esc(wa)}`,{type:false});
