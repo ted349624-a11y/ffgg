@@ -1,20 +1,45 @@
 {
-  "rewrites": [
+  "rewrites": [],
+  "redirects": [
     {
       "source": "/claim",
-      "destination": "/claim/index.html"
+      "destination": "/",
+      "permanent": false
     },
     {
-      "source": "/story",
-      "destination": "/story/index.html"
+      "source": "/claim/(.*)",
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/vote",
-      "destination": "/vote/index.html"
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/vote/(.*)",
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/airdrop",
-      "destination": "/airdrop/index.html"
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/airdrop/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/story",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/story/(.*)",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
